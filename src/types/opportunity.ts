@@ -22,7 +22,7 @@ export interface UserFilter {
 export function cleanRewardString(rawReward?: string | null): string {
   if (!rawReward || typeof rawReward !== 'string') return 'Prize pool undisclosed';
   const noHtml = rawReward.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
-  if (!noHtml || noHtml === '$' || noHtml === '$0') return 'Prize pool undisclosed';
+  if (!noHtml || noHtml === '$' || noHtml === '$0' || noHtml.includes('[object Object]')) return 'Prize pool undisclosed';
   return noHtml;
 }
 

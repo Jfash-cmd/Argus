@@ -17,9 +17,13 @@ export class UnstopScraper implements Scraper {
         for (const item of items) {
           const rawTitle = item.title;
           const link = sanitizeLink(item.seo_url ? `https://unstop.com/${item.seo_url}` : 'https://unstop.com');
-          if (!rawTitle || !link) continue;
-
-          const reward = item.prizes ? `$${item.prizes}` : 'Prizes & certificates';
+          let reward = 'Prizes & certificates';
+          if (typeof item.prizes === 'string' || typeof item.prizes === 'number') {
+            reward = `$${item.prizes}`;
+          } else if (Array.isArray(item.prizes) && item.prizes.length > 0) {
+            const first = item.prizes[0]?.cash || item.prizes[0]?.amount;
+            reward = first ? `$${first}` : 'Prizes & certificates';
+          }
           let deadline: string | null = null;
           if (item.end_date) {
             const d = new Date(item.end_date);

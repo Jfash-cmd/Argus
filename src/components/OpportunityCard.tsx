@@ -33,7 +33,9 @@ export function OpportunityCard({ item, index }: CardProps) {
   }
 
   const paddedIndex = String(index + 1).padStart(2, '0');
-  const cleanReward = item.reward ? item.reward.replace(/<[^>]*>/g, '').trim() : 'Prize pool undisclosed';
+  const cleanReward = item.reward && !item.reward.includes('[object Object]')
+    ? item.reward.replace(/<[^>]*>/g, '').trim()
+    : 'Prize pool undisclosed';
   const displayReward = (item as any).reward_num && (cleanReward.includes('$') || cleanReward === String((item as any).reward_num))
     ? `$${(item as any).reward_num.toLocaleString()}`
     : cleanReward;
