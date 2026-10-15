@@ -10,7 +10,7 @@ interface HeroBannerProps {
 
 export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) {
   return (
-    <div style={{ paddingTop: '2.5rem', marginBottom: '3.5rem' }}>
+    <div style={{ paddingTop: '2.5rem', marginBottom: '3rem' }}>
       {/* Top Meta Line */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div className="mono-label" style={{ color: 'var(--accent-coral)', fontSize: '0.72rem', letterSpacing: '0.12em' }}>
@@ -41,28 +41,30 @@ export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) 
         </button>
       </div>
 
-      {/* Main Heading (64-72px scale, text-6xl to text-7xl matching 'One product brain.') */}
+      {/* Main Heading: Exact 48px (text-5xl), font-weight 700, line-height 1.1 */}
       <h1
         className="heading-main"
         style={{
-          fontSize: 'clamp(3.75rem, 5vw, 4.5rem)',
-          lineHeight: 1.0,
-          letterSpacing: '-0.03em',
+          fontSize: '48px',
+          lineHeight: 1.1,
+          letterSpacing: '-0.025em',
           fontWeight: 700,
-          maxWidth: '1100px',
+          maxWidth: '1000px',
         }}
       >
         DISCOVER HIGH-YIELD OPPORTUNITIES
       </h1>
 
-      {/* Subtitle Line matching 'Four delivery surfaces.', sitting directly underneath with tight line-height */}
+      {/* Subtitle Line: Exact 32px (text-3xl), italic, Instrument Serif, line-height 1.1, gap 8px */}
       <div
         className="heading-accent"
         style={{
-          fontSize: 'clamp(3.5rem, 4.75vw, 4.25rem)',
-          lineHeight: 1.05,
-          marginTop: '0.2rem',
-          maxWidth: '1100px',
+          fontSize: '32px',
+          lineHeight: 1.1,
+          marginTop: '8px',
+          maxWidth: '1000px',
+          fontFamily: 'var(--font-instrument-serif), Georgia, serif',
+          fontStyle: 'italic',
         }}
       >
         curated intelligence for hackathons, bounties, freelance gigs, and grants
