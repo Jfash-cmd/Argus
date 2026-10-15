@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Opportunity {
+  id         String    @id @default(uuid())
+  title      String
+  source     String
+  category   String
+  reward     String
+  reward_num Float?
+  deadline   DateTime?
+  link       String
+  tags       String    @default("[]")
+  first_seen DateTime  @default(now())
+
+  @@unique([title, source])
+  @@index([category])
+  @@index([deadline])
+  @@index([first_seen])
+  @@map("opportunities")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  telegram_id String   @unique
+  chat_id     String?
+  username    String?
+  first_name  String?
+  photo_url   String?
+  auth_date   Int?
+  auth_token  String?  @unique
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  filter      Filter?
+
+  @@map("users")
+}
+
+model Filter {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  keywords   String   @default("[]")
+  categories String   @default("[]")
+  min_prize  Float    @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("filters")
+}

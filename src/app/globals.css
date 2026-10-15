@@ -1,0 +1,140 @@
+:root {
+  --bg-dark: #171915;
+  --bg-card: #1c1e19;
+  --bg-card-hover: #222520;
+  --bg-light-header: #f1efe7;
+  --text-light: #f2eee2;
+  --text-ink: #191915;
+  --accent-italic: #99c3d9;
+  --accent-coral: #e7603f;
+  --text-muted: #6e6b62;
+  --border-hairline: rgba(242, 238, 226, 0.12);
+  --border-hairline-light: rgba(25, 25, 21, 0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+input, select { font-family: inherit; }
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Micro-labels in IBM Plex Mono */
+.mono-label {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* Section Header Typography Pair */
+.heading-main {
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-light);
+}
+
+.heading-accent {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 1.6rem;
+  color: var(--accent-italic);
+  line-height: 1.2;
+}
+
+/* Numbered 4-Column Bordered Grid */
+.grid-4-col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border-hairline);
+  border-left: 1px solid var(--border-hairline);
+}
+
+@media (max-width: 1024px) {
+  .grid-4-col { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .grid-4-col { grid-template-columns: 1fr; }
+}
+
+.grid-card {
+  border-right: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
+  padding: 1.5rem;
+  background-color: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+.grid-card:hover {
+  background-color: var(--bg-card-hover);
+}
+
+/* Floating Pill-Shaped Tab Switcher (Bottom-Center) */
+.floating-pill-nav {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(28, 30, 25, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.4rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-hairline);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+}
+
+.pill-button {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.pill-button:hover {
+  color: var(--text-light);
+}
+
+.pill-button.active {
+  background: var(--accent-coral);
+  color: #fff;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #282a24; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3c3e37; }
