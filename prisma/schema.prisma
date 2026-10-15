@@ -17,6 +17,7 @@ model Opportunity {
   deadline   DateTime?
   link       String
   tags       String    @default("[]")
+  details    String?
   first_seen DateTime  @default(now())
 
   @@unique([title, source])

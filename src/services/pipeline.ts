@@ -1,6 +1,6 @@
 import { prisma } from '../lib/db';
 import { runAllScrapers } from '../scrapers';
-import { NormalizedOpportunity, parseRewardAmount, cleanRewardString } from '../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, cleanRewardString, cleanTitle, cleanTag } from '../types/opportunity';
 import { dispatchNewOpportunityAlerts } from './telegramAlerts';
 
 export interface IngestionResult {
@@ -19,36 +19,46 @@ export async function runIngestionPipeline(): Promise<IngestionResult> {
 
   for (const item of opportunities) {
     try {
+      const { title: safeTitle, details: safeDetails } = cleanTitle(item.title);
+      const safeTags = (item.tags || []).map(cleanTag).filter(Boolean);
+      const finalDetails = item.details || safeDetails;
+
       const existing = await prisma.opportunity.findUnique({
         where: {
           title_source: {
-            title: item.title,
+            title: safeTitle,
             source: item.source,
           },
         },
       });
 
       if (typeof item.reward !== 'string' && typeof item.reward !== 'number') {
-        console.warn(`[Pipeline Warning] Opportunity "${item.title}" from source "${item.source}" has non-primitive reward:`, item.reward);
+        console.warn(`[Pipeline Warning] Opportunity "${safeTitle}" from source "${item.source}" has non-primitive reward:`, item.reward);
       }
       const safeReward = cleanRewardString(item.reward);
 
       if (!existing) {
         await prisma.opportunity.create({
           data: {
-            title: item.title,
+            title: safeTitle,
             source: item.source,
             category: item.category,
             reward: safeReward,
             reward_num: item.reward_num ?? parseRewardAmount(safeReward),
             deadline: item.deadline ? new Date(item.deadline) : null,
             link: item.link,
-            tags: JSON.stringify(item.tags || []),
+            tags: JSON.stringify(safeTags),
+            details: finalDetails,
             first_seen: new Date(item.first_seen),
           },
         });
 
-        newOpportunities.push(item);
+        newOpportunities.push({
+          ...item,
+          title: safeTitle,
+          details: finalDetails,
+          tags: safeTags,
+        });
       }
     } catch (err) {
       console.error(`[Pipeline] Error saving "${item.title}":`, err);

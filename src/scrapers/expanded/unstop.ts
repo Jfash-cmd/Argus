@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanRewardString } from '../../types/opportunity';
 
 export class UnstopScraper implements Scraper {
   name = 'unstop';

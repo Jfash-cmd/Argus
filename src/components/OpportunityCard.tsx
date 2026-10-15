@@ -1,6 +1,7 @@
 'use client';
 
-import { ExternalLink, Clock } from 'lucide-react';
+import { useState } from 'react';
+import { ExternalLink, Clock, ChevronDown } from 'lucide-react';
 
 interface CardProps {
   item: {
@@ -12,12 +13,14 @@ interface CardProps {
     deadline?: string | null;
     link: string;
     tags: string[];
+    details?: string | null;
     first_seen: string;
   };
   index: number;
 }
 
 export function OpportunityCard({ item, index }: CardProps) {
+  const [showDetails, setShowDetails] = useState(false);
   let isUrgent = false;
   let deadlineLabel = 'FLEXIBLE';
   if (item.deadline) {
@@ -58,41 +61,19 @@ export function OpportunityCard({ item, index }: CardProps) {
 
         {/* 3. Category badge ("BOUNTY") - small, muted, not heavily colored/boxed, reads as label */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem' }}>
-          <span style={{
-            fontFamily: 'var(--font-ibm-plex-mono)',
-            fontSize: '0.65rem',
-            letterSpacing: '0.1em',
-            color: '#6e6b62',
-            textTransform: 'uppercase',
-            fontWeight: 500,
-          }}>
+          <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#6e6b62', textTransform: 'uppercase', fontWeight: 500 }}>
             {item.category}
           </span>
           {isUrgent && (
-            <span style={{
-              fontFamily: 'var(--font-ibm-plex-mono)',
-              fontSize: '0.62rem',
-              color: '#8a8578',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '3px',
-            }}>
+            <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: '0.62rem', color: '#8a8578', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <Clock size={10} />
               {deadlineLabel}
             </span>
           )}
         </div>
 
-        {/* 4. Title - bold Manrope, text-lg to text-xl (closer to original size), full opacity white/cream */}
-        <h3 style={{
-          fontSize: '1.2rem',
-          fontWeight: 700,
-          lineHeight: 1.35,
-          letterSpacing: '-0.015em',
-          marginBottom: '1rem',
-          color: 'var(--text-light)',
-          fontFamily: 'var(--font-manrope)',
-        }}>
+        {/* 4. Title - bold Manrope, text-lg to text-xl, full opacity white/cream */}
+        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.015em', marginBottom: '1rem', color: 'var(--text-light)', fontFamily: 'var(--font-manrope)' }}>
           <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
             {item.title}
           </a>
@@ -100,39 +81,50 @@ export function OpportunityCard({ item, index }: CardProps) {
 
         {/* 5. Tags row - small IBM Plex Mono, uppercase, muted gray (#6e6b62), NOT coral */}
         {item.tags && item.tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: item.details ? '0.75rem' : '1.5rem' }}>
             {item.tags.slice(0, 3).map((tag, idx) => (
-              <span
-                key={idx}
-                style={{
-                  fontFamily: 'var(--font-ibm-plex-mono)',
-                  fontSize: '0.65rem',
-                  color: '#6e6b62',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                }}
-              >
+              <span key={idx} style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: '0.65rem', color: '#6e6b62', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 #{tag}
               </span>
             ))}
           </div>
         )}
+
+        {/* Collapsible Details section */}
+        {item.details && (
+          <div style={{ marginBottom: '1.25rem' }}>
+            <button
+              onClick={() => setShowDetails(!showDetails)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                cursor: 'pointer',
+                color: '#8a8578',
+                fontFamily: 'var(--font-ibm-plex-mono)',
+                fontSize: '0.65rem',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+              }}
+            >
+              <ChevronDown size={11} style={{ transform: showDetails ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s ease' }} />
+              {showDetails ? 'Hide Details' : 'Details'}
+            </button>
+            {showDetails && (
+              <div style={{ marginTop: '0.45rem', fontSize: '0.74rem', lineHeight: 1.4, color: 'var(--text-muted)', borderLeft: '2px solid var(--border-hairline)', paddingLeft: '0.55rem' }}>
+                {item.details}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 6. Hairline divider & 7. REWARD label above amount + Apply button row */}
-      <div style={{
-        borderTop: '1px solid var(--border-hairline)',
-        paddingTop: '1rem',
-        marginTop: '1rem',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-ibm-plex-mono)',
-          color: '#6e6b62',
-          fontSize: '0.6rem',
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          marginBottom: '0.35rem',
-        }}>
+      <div style={{ borderTop: '1px solid var(--border-hairline)', paddingTop: '1rem', marginTop: '1rem' }}>
+        <div style={{ fontFamily: 'var(--font-ibm-plex-mono)', color: '#6e6b62', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
           REWARD
         </div>
 
