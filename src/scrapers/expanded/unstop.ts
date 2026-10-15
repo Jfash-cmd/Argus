@@ -18,12 +18,27 @@ export class UnstopScraper implements Scraper {
           const rawTitle = item.title;
           const link = sanitizeLink(item.seo_url ? `https://unstop.com/${item.seo_url}` : 'https://unstop.com');
           let reward = 'Prizes & certificates';
-          if (typeof item.prizes === 'string' || typeof item.prizes === 'number') {
-            reward = `$${item.prizes}`;
+          let rewardNum: number | null = null;
+          if (typeof item.prizes === 'number') {
+            reward = `$${item.prizes.toLocaleString()}`;
+            rewardNum = item.prizes;
+          } else if (typeof item.prizes === 'string') {
+            reward = cleanRewardString(item.prizes);
+            rewardNum = parseRewardAmount(reward);
           } else if (Array.isArray(item.prizes) && item.prizes.length > 0) {
-            const first = item.prizes[0]?.cash || item.prizes[0]?.amount;
-            reward = first ? `$${first}` : 'Prizes & certificates';
+            const topTier = item.prizes.find((p: any) => p && typeof p.cash === 'number' && p.cash > 0) || item.prizes[0];
+            if (topTier && typeof topTier.cash === 'number' && topTier.cash > 0) {
+              const symbol = topTier.currencyCode === 'INR' ? '₹' : (topTier.currencyCode === 'USD' ? '$' : (topTier.currencyCode ? `${topTier.currencyCode} ` : '$'));
+              reward = `${symbol}${topTier.cash.toLocaleString()}`;
+              rewardNum = topTier.cash;
+            } else if (topTier && (typeof topTier.amount === 'number' || typeof topTier.amount === 'string')) {
+              reward = `$${topTier.amount}`;
+              rewardNum = parseRewardAmount(String(topTier.amount));
+            } else if (topTier && topTier.rank) {
+              reward = `${topTier.rank} Certificate & Prizes`;
+            }
           }
+
           let deadline: string | null = null;
           if (item.end_date) {
             const d = new Date(item.end_date);
@@ -35,7 +50,7 @@ export class UnstopScraper implements Scraper {
             source: 'unstop',
             category: 'hackathon',
             reward,
-            reward_num: parseRewardAmount(reward),
+            reward_num: rewardNum ?? parseRewardAmount(reward),
             deadline,
             link,
             tags: ['Unstop', 'Competition'],

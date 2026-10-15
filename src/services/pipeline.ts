@@ -28,14 +28,19 @@ export async function runIngestionPipeline(): Promise<IngestionResult> {
         },
       });
 
+      if (typeof item.reward !== 'string' && typeof item.reward !== 'number') {
+        console.warn(`[Pipeline Warning] Opportunity "${item.title}" from source "${item.source}" has non-primitive reward:`, item.reward);
+      }
+      const safeReward = cleanRewardString(item.reward);
+
       if (!existing) {
         await prisma.opportunity.create({
           data: {
             title: item.title,
             source: item.source,
             category: item.category,
-            reward: cleanRewardString(item.reward),
-            reward_num: item.reward_num ?? parseRewardAmount(item.reward),
+            reward: safeReward,
+            reward_num: item.reward_num ?? parseRewardAmount(safeReward),
             deadline: item.deadline ? new Date(item.deadline) : null,
             link: item.link,
             tags: JSON.stringify(item.tags || []),
