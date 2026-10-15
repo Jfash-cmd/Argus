@@ -29,7 +29,7 @@ A shareable, multi-user opportunity-alert platform that aggregates hackathons, b
 - **3-Hour Cron (`src/worker.ts`):** Scrapes all sources, deduplicates, and saves new entries.
 - **Notification Dispatcher (`src/services/telegramAlerts.ts`):** Dispatches newly discovered listings to matching users with ~50ms rate-limit pacing.
 - **Immediate Alerts (<48h):** Priority alerts for opportunities closing in under 48 hours.
-- **Twice-Daily Lagos Digests (`src/services/telegramDigest.ts`):** Dispatched at 7:00am and 6:30pm (WAT / Africa:Lagos) with Top 5, Quick Wins, High Reward, Closing Soon (<72h), and Newly Announced sections (never padded with stale listings).
+- **Twice-Daily WAT Digests (`src/services/telegramDigest.ts`):** Dispatched at 7:00am and 6:30pm (WAT / Africa:Lagos) with Top 5, Quick Wins, High Reward, Closing Soon (<72h), and Newly Announced sections (never padded with stale listings).
 
 ### 3. Phase 2 Expanded Sources (`src/scrapers/expanded/`)
 Modular scrapers feeding into the unified schema:

@@ -22,11 +22,11 @@ cron.schedule('0 */3 * * *', async () => {
   }
 });
 
-// 3. Cron: Morning Digest at 7:00am Africa/Lagos time
+// 3. Cron: Morning Digest at 7:00am WAT
 cron.schedule(
   '0 7 * * *',
   async () => {
-    console.log('[Worker] 7:00am (Africa/Lagos) Morning Digest triggered');
+    console.log('[Worker] 7:00am (WAT) Morning Digest triggered');
     try {
       const sent = await generateAndSendDigests(13); // Window covers overnight (from 6:30pm to 7:00am = ~12.5h)
       console.log(`[Worker] Morning digest dispatched to ${sent} users.`);
@@ -37,11 +37,11 @@ cron.schedule(
   { timezone: LAGOS_TZ }
 );
 
-// 4. Cron: Evening Digest at 6:30pm (18:30) Africa/Lagos time
+// 4. Cron: Evening Digest at 6:30pm (18:30) WAT
 cron.schedule(
   '30 18 * * *',
   async () => {
-    console.log('[Worker] 6:30pm (Africa/Lagos) Evening Digest triggered');
+    console.log('[Worker] 6:30pm (WAT) Evening Digest triggered');
     try {
       const sent = await generateAndSendDigests(12); // Window covers daytime (from 7:00am to 6:30pm = 11.5h)
       console.log(`[Worker] Evening digest dispatched to ${sent} users.`);

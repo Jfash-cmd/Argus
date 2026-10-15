@@ -112,7 +112,7 @@ export default function DashboardPage() {
           style={{ background: 'transparent', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem' }}
         >
           <Send size={13} color="var(--accent-coral)" />
-          {testDigestStatus || 'TEST LAGOS DIGEST NOW'}
+          {testDigestStatus || 'TRIGGER TEST DIGEST (WAT)'}
         </button>
       </div>
 

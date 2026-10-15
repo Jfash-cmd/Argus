@@ -27,7 +27,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: 'ARGUS | Opportunity Alert Radar',
-  description: 'Multi-user opportunity radar tracking hackathons, bounties, freelance gigs, and grants with instant Telegram alerts and Lagos digests.',
+  description: 'Multi-user opportunity radar tracking hackathons, bounties, freelance gigs, and grants with instant Telegram alerts and WAT digests.',
 };
 
 export default function RootLayout({
