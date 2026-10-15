@@ -90,6 +90,31 @@ input, select { font-family: inherit; }
   background-color: var(--bg-card-hover);
 }
 
+/* Card Apply Action Button */
+.btn-apply {
+  font-family: var(--font-ibm-plex-mono), monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-hairline);
+  background: rgba(242, 238, 226, 0.03);
+  color: var(--text-light);
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn-apply:hover {
+  border-color: var(--accent-coral);
+  color: var(--accent-coral);
+  background: rgba(231, 96, 63, 0.08);
+}
+
 /* Floating Pill-Shaped Tab Switcher (Bottom-Center) */
 .floating-pill-nav {
   position: fixed;

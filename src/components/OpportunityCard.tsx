@@ -81,13 +81,13 @@ export function OpportunityCard({ item, index }: CardProps) {
           )}
         </div>
 
-        {/* 4. Title - bold Manrope, large (text-2xl to text-3xl), full opacity white/cream */}
+        {/* 4. Title - bold Manrope, text-lg to text-xl (closer to original size), full opacity white/cream */}
         <h3 style={{
-          fontSize: '1.65rem',
+          fontSize: '1.2rem',
           fontWeight: 700,
-          lineHeight: 1.25,
-          letterSpacing: '-0.02em',
-          marginBottom: '1.25rem',
+          lineHeight: 1.35,
+          letterSpacing: '-0.015em',
+          marginBottom: '1rem',
           color: 'var(--text-light)',
           fontFamily: 'var(--font-manrope)',
         }}>
@@ -98,7 +98,7 @@ export function OpportunityCard({ item, index }: CardProps) {
 
         {/* 5. Tags row - small IBM Plex Mono, uppercase, muted gray (#6e6b62), NOT coral */}
         {item.tags && item.tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1.75rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1.5rem' }}>
             {item.tags.slice(0, 3).map((tag, idx) => (
               <span
                 key={idx}
@@ -117,7 +117,7 @@ export function OpportunityCard({ item, index }: CardProps) {
         )}
       </div>
 
-      {/* 6. Thin hairline divider line & 7. Reward + Apply button row at the bottom */}
+      {/* 6. Thin hairline divider line & 7. Reward + Apply button row with visible border/padding */}
       <div style={{
         borderTop: '1px solid var(--border-hairline)',
         paddingTop: '1rem',
@@ -142,22 +142,8 @@ export function OpportunityCard({ item, index }: CardProps) {
           </div>
         </div>
 
-        <a
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: 'var(--font-ibm-plex-mono)',
-            color: 'var(--text-light)',
-            fontSize: '0.7rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-          }}
-        >
-          APPLY <ExternalLink size={12} />
+        <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn-apply">
+          APPLY <ExternalLink size={11} />
         </a>
       </div>
     </div>
