@@ -117,34 +117,32 @@ export function OpportunityCard({ item, index }: CardProps) {
         )}
       </div>
 
-      {/* 6. Thin hairline divider line & 7. Reward + Apply button row with visible border/padding */}
+      {/* 6. Hairline divider & 7. REWARD label above amount + Apply button row */}
       <div style={{
         borderTop: '1px solid var(--border-hairline)',
         paddingTop: '1rem',
         marginTop: '1rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
       }}>
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-ibm-plex-mono)',
-            color: '#6e6b62',
-            fontSize: '0.6rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            marginBottom: '0.2rem',
-          }}>
-            REWARD
-          </div>
+        <div style={{
+          fontFamily: 'var(--font-ibm-plex-mono)',
+          color: '#6e6b62',
+          fontSize: '0.6rem',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          marginBottom: '0.35rem',
+        }}>
+          REWARD
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-light)', fontFamily: 'var(--font-manrope)' }}>
             {displayReward}
           </div>
-        </div>
 
-        <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn-apply">
-          APPLY <ExternalLink size={11} />
-        </a>
+          <a href={item.link} target="_blank" rel="noopener noreferrer" className="btn-apply">
+            APPLY <ExternalLink size={11} />
+          </a>
+        </div>
       </div>
     </div>
   );
