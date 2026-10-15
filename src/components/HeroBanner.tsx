@@ -65,6 +65,7 @@ export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) 
           maxWidth: '1000px',
           fontFamily: 'var(--font-instrument-serif), Georgia, serif',
           fontStyle: 'italic',
+          color: '#99c3d9',
         }}
       >
         curated intelligence for hackathons, bounties, freelance gigs, and grants

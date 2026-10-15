@@ -5,7 +5,7 @@
   --bg-light-header: #f1efe7;
   --text-light: #f2eee2;
   --text-ink: #191915;
-  --accent-italic: rgba(242, 238, 226, 0.88);
+  --accent-italic: #99c3d9;
   --accent-coral: #e7603f;
   --text-muted: #6e6b62;
   --border-hairline: rgba(242, 238, 226, 0.12);
@@ -76,12 +76,12 @@ input, select { font-family: inherit; }
 .grid-card {
   border-right: 1px solid var(--border-hairline);
   border-bottom: 1px solid var(--border-hairline);
-  padding: 1.5rem;
+  padding: 2rem 1.75rem;
   background-color: var(--bg-card);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 250px;
+  min-height: 420px;
   position: relative;
   transition: background-color 0.15s ease;
 }
