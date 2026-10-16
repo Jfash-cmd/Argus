@@ -1,6 +1,6 @@
 # ARGUS — Multi-User Opportunity Alert Radar
 
-A shareable, multi-user opportunity-alert platform that aggregates hackathons, bounties, freelance gigs, and grants, delivering real-time alerts via individually-connected Telegram accounts and a website dashboard matching the exact visual system of **kiddobuild.dev**.
+A shareable, multi-user opportunity-alert platform that aggregates hackathons, bounties, freelance gigs, and grants, delivering real-time alerts via individually-connected Telegram accounts and a website dashboard.
 
 ## Tech Stack
 - **Framework:** Next.js 15 (App Router, API routes, Vanilla CSS)
