@@ -10,7 +10,11 @@ export function matchesUserFilter(
   filterCategories: string[],
   minPrize: number
 ): boolean {
-  if (filterCategories.length > 0 && !filterCategories.includes(opp.category)) return false;
+  if (filterCategories.length > 0) {
+    const matchesCat = filterCategories.includes(opp.category) ||
+      (filterCategories.includes('hackathon') && (opp.category === 'web3_hackathon' || opp.category === 'web2_hackathon'));
+    if (!matchesCat) return false;
+  }
   const prizeVal = opp.reward_num ?? parseRewardAmount(opp.reward) ?? 0;
   if (minPrize > 0 && prizeVal < minPrize) return false;
   if (filterKeywords.length > 0) {
@@ -40,7 +44,7 @@ export async function dispatchNewOpportunityAlerts(newOpps: NormalizedOpportunit
     const header = isUrgent ? '🚨 *URGENT OPPORTUNITY (<48H TO DEADLINE)*' : '🎯 *NEW OPPORTUNITY DISCOVERED*';
     const message = `${header}
 \n*${opp.title}*
-• *Source:* ${opp.source.toUpperCase()} | *Category:* ${opp.category.toUpperCase()}
+• *Source:* ${opp.source.replace('_', ' ').toUpperCase()} | *Category:* ${opp.category.replace('_', ' ').toUpperCase()}
 • *Reward:* ${opp.reward}
 • *Deadline (WAT):* ${deadlineStr}
 • *Tags:* ${opp.tags.map(t => `#${t.replace(/\s+/g, '_')}`).join(' ')}

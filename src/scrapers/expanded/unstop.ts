@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanRewardString } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanRewardString, filterAndCleanTags, isDeadlineExpired } from '../../types/opportunity';
 
 export class UnstopScraper implements Scraper {
   name = 'unstop';
@@ -45,15 +45,39 @@ export class UnstopScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
+          const rawTags: string[] = [];
+          if (Array.isArray(item.tags)) {
+            for (const t of item.tags) {
+              if (typeof t === 'string') rawTags.push(t);
+              else if (t && typeof t.name === 'string') rawTags.push(t.name);
+            }
+          }
+          if (Array.isArray(item.required_skills)) {
+            for (const s of item.required_skills) {
+              const name = s?.skill_name || s?.skill;
+              if (typeof name === 'string') rawTags.push(name);
+            }
+          }
+          if (Array.isArray(item.filters)) {
+            for (const f of item.filters) {
+              if (f?.type === 'category' && f?.name && f.name !== 'Hackathon' && f.name !== 'College Festival') {
+                rawTags.push(f.name);
+              }
+            }
+          }
+          const tags = filterAndCleanTags(rawTags, 'unstop').slice(0, 5);
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'unstop',
-            category: 'hackathon',
+            category: 'web2_hackathon',
             reward,
             reward_num: rewardNum ?? parseRewardAmount(reward),
             deadline,
             link,
-            tags: ['Unstop', 'Competition'],
+            tags,
             first_seen: nowIso,
           });
         }

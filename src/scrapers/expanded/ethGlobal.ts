@@ -1,3 +1,4 @@
+import * as cheerio from 'cheerio';
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
 import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
 
@@ -9,41 +10,51 @@ export class EthGlobalScraper implements Scraper {
     const nowIso = new Date().toISOString();
 
     try {
-      const res = await safeFetch('https://ethglobal.com/api/events');
+      const res = await safeFetch('https://ethglobal.com/events');
       if (res.ok) {
-        const data = await res.json();
-        const events = Array.isArray(data) ? data : (data.events || []);
+        const html = await res.text();
+        const $ = cheerio.load(html);
+        const seen = new Set<string>();
 
-        for (const ev of events) {
-          const rawTitle = ev.name || ev.title;
-          const slug = ev.slug || ev.id;
-          const link = sanitizeLink(ev.url || (slug ? `https://ethglobal.com/events/${slug}` : 'https://ethglobal.com'));
-          if (!rawTitle || !link) continue;
+        $('a[href^="/events/"]').each((_, el) => {
+          const href = $(el).attr('href') || '';
+          const cleanHref = href.split('?')[0].replace(/\/+$/, '');
+          if (seen.has(cleanHref) || cleanHref === '/events') return;
 
-          const reward = ev.prizes ? `$${ev.prizes}` : '$100,000+ Prize Pool';
-          let deadline: string | null = null;
-          if (ev.endDate || ev.end_date) {
-            const d = new Date(ev.endDate || ev.end_date);
-            if (!isNaN(d.getTime())) deadline = d.toISOString();
+          const rawText = $(el).text().replace(/\s+/g, ' ').trim();
+          if (!rawText || (rawText.includes('Apply to Attend') && rawText.length < 20)) return;
+
+          let title = $(el).find('h2, h3, h4').first().text().trim();
+          if (!title) {
+            const match = rawText.match(/(ETHGlobal\s+[A-Za-z0-9\s]+?)(?:Virtual|IRL|Hackathon|Conference|[0-9]{4}|$)/i);
+            if (match) {
+              title = match[1].trim();
+            } else {
+              const slug = cleanHref.replace('/events/', '');
+              title = `ETHGlobal ${slug.charAt(0).toUpperCase() + slug.slice(1)}`;
+            }
           }
 
+          if (!title) return;
+          seen.add(cleanHref);
+
           opportunities.push({
-            title: cleanUntrustedText(rawTitle, 120),
+            title: cleanUntrustedText(title, 120),
             source: 'ethglobal',
-            category: 'hackathon',
-            reward,
-            reward_num: parseRewardAmount(reward),
-            deadline,
-            link,
-            tags: ['ETHGlobal', 'Ethereum', 'Web3'],
+            category: 'web3_hackathon',
+            reward: '$100,000+ Prize Pool',
+            reward_num: 100000,
+            deadline: null,
+            link: `https://ethglobal.com${cleanHref}`,
+            tags: ['Ethereum', 'Web3'],
             first_seen: nowIso,
           });
-        }
+        });
       }
     } catch (err) {
       console.error('[EthGlobalScraper] scrape failed:', err);
     }
 
-    return opportunities;
+    return opportunities.slice(0, 25);
   }
 }

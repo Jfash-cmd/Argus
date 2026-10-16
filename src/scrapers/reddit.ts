@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import { Scraper, safeFetch, cleanUntrustedText } from './base';
 import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, OpportunityCategory } from '../types/opportunity';
+import { classifyHackathon } from '../lib/categorization';
 
 export class RedditScraper implements Scraper {
   name = 'reddit';
@@ -38,10 +39,14 @@ export class RedditScraper implements Scraper {
             const rewardMatch = combined.match(/\$\s*([0-9]+(?:\.[0-9]+)?(?:\s*\/\s*(?:hr|hour))?)/i);
             const reward = rewardMatch ? rewardMatch[0].trim() : (sub.category === 'hackathon' ? 'Prize pool details in post' : 'Rate negotiable / See post');
 
+            const finalCat: OpportunityCategory = sub.category === 'hackathon'
+              ? classifyHackathon('reddit', title, [`r/${sub.name}`], content)
+              : sub.category;
+
             opportunities.push({
               title,
               source: 'reddit',
-              category: sub.category,
+              category: finalCat,
               reward,
               reward_num: parseRewardAmount(reward),
               deadline: null,

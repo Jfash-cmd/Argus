@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class HackerEarthScraper implements Scraper {
   name = 'hackerearth';
@@ -25,15 +25,17 @@ export class HackerEarthScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'hackerearth',
-            category: 'hackathon',
+            category: 'web2_hackathon',
             reward: 'Prizes & hiring opportunities',
             reward_num: null,
             deadline,
             link,
-            tags: ['HackerEarth', 'Competitive Programming'],
+            tags: ['Competitive Programming'],
             first_seen: nowIso,
           });
         }

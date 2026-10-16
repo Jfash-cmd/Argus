@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import { Scraper, safeFetch, cleanUntrustedText } from './base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanRewardString } from '../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanRewardString, isDeadlineExpired } from '../types/opportunity';
+import { classifyHackathon } from '../lib/categorization';
 
 export class DevpostScraper implements Scraper {
   name = 'devpost';
@@ -9,42 +10,56 @@ export class DevpostScraper implements Scraper {
     const opportunities: NormalizedOpportunity[] = [];
     const nowIso = new Date().toISOString();
 
-    try {
-      const res = await safeFetch('https://devpost.com/api/hackathons?page=1&status[]=upcoming&status[]=open');
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data.hackathons)) {
-          for (const item of data.hackathons) {
-            // Strip any HTML tags like <span data-currency-value>...</span>
-            const reward = cleanRewardString(item.prize_amount);
-            const rawLink = sanitizeLink(item.url || '');
-            if (!rawLink) continue;
+    const seenUrls = new Set<string>();
+    const endpoints = [
+      'https://devpost.com/api/hackathons?page=1&status[]=upcoming&status[]=open',
+      'https://devpost.com/api/hackathons?page=1&status[]=upcoming&status[]=open&themes[]=Blockchain',
+    ];
 
-            let deadline: string | null = null;
-            if (item.submission_period_dates?.includes('-')) {
-              const datePart = item.submission_period_dates.split('-')[1]?.trim();
-              const parsed = datePart ? new Date(datePart) : null;
-              if (parsed && !isNaN(parsed.getTime())) deadline = parsed.toISOString();
+    for (const url of endpoints) {
+      try {
+        const res = await safeFetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.hackathons)) {
+            for (const item of data.hackathons) {
+              const rawLink = sanitizeLink(item.url || '');
+              if (!rawLink || seenUrls.has(rawLink)) continue;
+              seenUrls.add(rawLink);
+
+              const reward = cleanRewardString(item.prize_amount);
+
+              let deadline: string | null = null;
+              if (item.submission_period_dates?.includes('-')) {
+                const datePart = item.submission_period_dates.split('-')[1]?.trim();
+                const parsed = datePart ? new Date(datePart) : null;
+                if (parsed && !isNaN(parsed.getTime())) deadline = parsed.toISOString();
+              }
+
+              if (isDeadlineExpired(deadline)) continue;
+
+              const tags = (item.themes?.map((t: { name: string }) => cleanUntrustedText(t.name, 30)) || ['Hackathon']).slice(0, 5);
+              const title = cleanUntrustedText(item.title || 'Devpost Hackathon', 120);
+              opportunities.push({
+                title,
+                source: 'devpost',
+                category: classifyHackathon('devpost', title, tags),
+                reward,
+                reward_num: parseRewardAmount(reward),
+                deadline,
+                link: rawLink,
+                tags,
+                first_seen: nowIso,
+              });
             }
-
-            opportunities.push({
-              title: cleanUntrustedText(item.title || 'Devpost Hackathon', 120),
-              source: 'devpost',
-              category: 'hackathon',
-              reward,
-              reward_num: parseRewardAmount(reward),
-              deadline,
-              link: rawLink,
-              tags: (item.themes?.map((t: { name: string }) => cleanUntrustedText(t.name, 30)) || ['Hackathon']).slice(0, 5),
-              first_seen: nowIso,
-            });
           }
-          if (opportunities.length > 0) return opportunities;
         }
+      } catch {
+        // Continue to next endpoint
       }
-    } catch {
-      // Fallback to HTML scrape
     }
+
+    if (opportunities.length > 0) return opportunities;
 
     try {
       const htmlRes = await safeFetch('https://devpost.com/hackathons?status[]=upcoming&status[]=open');
@@ -66,15 +81,18 @@ export class DevpostScraper implements Scraper {
             if (!isNaN(parsed.getTime())) deadline = parsed.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) return;
+
+          const tags = ['Hackathon'];
           opportunities.push({
             title,
             source: 'devpost',
-            category: 'hackathon',
+            category: classifyHackathon('devpost', title, tags),
             reward,
             reward_num: parseRewardAmount(reward),
             deadline,
             link: rawLink,
-            tags: ['Hackathon', 'Devpost'],
+            tags,
             first_seen: nowIso,
           });
         });

@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { runIngestionPipeline } from './services/pipeline';
+import { runIngestionPipeline, purgeExpiredOpportunities } from './services/pipeline';
 import { generateAndSendDigests } from './services/telegramDigest';
 import { getTelegramBot } from './services/telegram';
 
@@ -28,6 +28,7 @@ cron.schedule(
   async () => {
     console.log('[Worker] 7:00am (WAT) Morning Digest triggered');
     try {
+      await purgeExpiredOpportunities();
       const sent = await generateAndSendDigests(13); // Window covers overnight (from 6:30pm to 7:00am = ~12.5h)
       console.log(`[Worker] Morning digest dispatched to ${sent} users.`);
     } catch (err) {
@@ -43,6 +44,7 @@ cron.schedule(
   async () => {
     console.log('[Worker] 6:30pm (WAT) Evening Digest triggered');
     try {
+      await purgeExpiredOpportunities();
       const sent = await generateAndSendDigests(12); // Window covers daytime (from 7:00am to 6:30pm = 11.5h)
       console.log(`[Worker] Evening digest dispatched to ${sent} users.`);
     } catch (err) {

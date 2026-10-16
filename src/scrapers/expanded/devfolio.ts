@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class DevfolioScraper implements Scraper {
   name = 'devfolio';
@@ -9,7 +9,7 @@ export class DevfolioScraper implements Scraper {
     const nowIso = new Date().toISOString();
 
     try {
-      const res = await safeFetch('https://api.devfolio.co/api/hackathons?filter=open&page=1&limit=20');
+      const res = await safeFetch('https://api.devfolio.co/api/hackathons?page=1&limit=20');
       if (res.ok) {
         const data = await res.json();
         const items = data.result || data.hackathons || [];
@@ -27,15 +27,17 @@ export class DevfolioScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'devfolio',
-            category: 'hackathon',
+            category: 'web3_hackathon',
             reward,
             reward_num: parseRewardAmount(reward),
             deadline,
             link,
-            tags: ['Devfolio', 'Hackathon'],
+            tags: ['Hackathon'],
             first_seen: nowIso,
           });
         }

@@ -11,7 +11,8 @@ interface CategoryTabsProps {
 export function CategoryTabs({ activeTab, onTabChange, counts }: CategoryTabsProps) {
   const tabs = [
     { id: 'all', label: 'All Opportunities', icon: Layers },
-    { id: 'hackathon', label: 'Hackathons', icon: Trophy },
+    { id: 'web3_hackathon', label: 'Web3 Hackathons', icon: Trophy },
+    { id: 'web2_hackathon', label: 'Web2 Hackathons', icon: Trophy },
     { id: 'bounty', label: 'Bounties', icon: Code2 },
     { id: 'freelance', label: 'Freelance & Gigs', icon: Briefcase },
     { id: 'grant', label: 'Grants', icon: Award },

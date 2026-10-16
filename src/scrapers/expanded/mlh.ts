@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class MlhScraper implements Scraper {
   name = 'mlh';
@@ -28,15 +28,17 @@ export class MlhScraper implements Scraper {
             if (!isNaN(parsed.getTime())) deadline = parsed.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) return;
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'mlh',
-            category: 'hackathon',
+            category: 'web2_hackathon',
             reward: 'Sponsored prizes & swag',
             reward_num: null,
             deadline,
             link,
-            tags: ['MLH', 'Student', 'Hackathon'],
+            tags: ['Student', 'Hackathon'],
             first_seen: nowIso,
           });
         });

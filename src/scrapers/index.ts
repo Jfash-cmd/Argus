@@ -5,7 +5,7 @@ import { GitHubScraper } from './github';
 import { RedditScraper } from './reddit';
 
 // Phase 2 expanded sources
-import { SubstackMediumScraper } from './expanded/rssFeeds';
+import { MediumScraper, SubstackScraper } from './expanded/rssFeeds';
 import { LablabScraper } from './expanded/lablab';
 import { HackQuestScraper } from './expanded/hackquest';
 import { KaggleScraper } from './expanded/kaggle';
@@ -27,7 +27,8 @@ export function getActiveScrapers(): Scraper[] {
     new GitHubScraper(),
     new RedditScraper(),
     // Phase 2 Expanded Sources
-    new SubstackMediumScraper(),
+    new MediumScraper(),
+    new SubstackScraper(),
     new LablabScraper(),
     new HackQuestScraper(),
     new KaggleScraper(),

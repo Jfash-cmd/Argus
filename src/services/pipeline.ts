@@ -1,6 +1,7 @@
 import { prisma } from '../lib/db';
 import { runAllScrapers } from '../scrapers';
-import { NormalizedOpportunity, parseRewardAmount, cleanRewardString, cleanTitle, cleanTag } from '../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, cleanRewardString, cleanTitle, cleanTag, filterAndCleanTags, isDeadlineExpired, getCompetitiveness } from '../types/opportunity';
+import { resolveCategory } from '../lib/categorization';
 import { dispatchNewOpportunityAlerts } from './telegramAlerts';
 
 export interface IngestionResult {
@@ -10,8 +11,32 @@ export interface IngestionResult {
   alertsDispatched: number;
 }
 
+export async function purgeExpiredOpportunities(): Promise<number> {
+  const now = new Date();
+  try {
+    const deleted = await prisma.opportunity.deleteMany({
+      where: {
+        deadline: {
+          lt: now,
+        },
+      },
+    });
+    if (deleted.count > 0) {
+      console.log(`[Pipeline] Cleaned up ${deleted.count} expired opportunities from database.`);
+    }
+    return deleted.count;
+  } catch (err) {
+    console.error('[Pipeline] Error purging expired opportunities:', err);
+    return 0;
+  }
+}
+
 export async function runIngestionPipeline(): Promise<IngestionResult> {
   console.log('[Pipeline] Starting Argus ingestion pipeline across all scrapers...');
+  
+  // Scheduled cleanup step: purge any opportunity whose deadline has passed
+  await purgeExpiredOpportunities();
+
   const { opportunities, stats } = await runAllScrapers();
   console.log('[Pipeline] Scraper yields:', stats, `Total items: ${opportunities.length}`);
 
@@ -19,9 +44,16 @@ export async function runIngestionPipeline(): Promise<IngestionResult> {
 
   for (const item of opportunities) {
     try {
+      // Filter out expired opportunities entirely
+      if (isDeadlineExpired(item.deadline)) {
+        continue;
+      }
+
       const { title: safeTitle, details: safeDetails } = cleanTitle(item.title);
-      const safeTags = (item.tags || []).map(cleanTag).filter(Boolean);
+      const safeTags = filterAndCleanTags(item.tags || [], item.source);
       const finalDetails = item.details || safeDetails;
+      const finalCategory = resolveCategory(item.category, item.source, safeTitle, safeTags, finalDetails);
+      const competitiveness = item.competitiveness || getCompetitiveness(item.source);
 
       const existing = await prisma.opportunity.findUnique({
         where: {
@@ -42,7 +74,8 @@ export async function runIngestionPipeline(): Promise<IngestionResult> {
           data: {
             title: safeTitle,
             source: item.source,
-            category: item.category,
+            category: finalCategory,
+            competitiveness,
             reward: safeReward,
             reward_num: item.reward_num ?? parseRewardAmount(safeReward),
             deadline: item.deadline ? new Date(item.deadline) : null,
@@ -56,8 +89,16 @@ export async function runIngestionPipeline(): Promise<IngestionResult> {
         newOpportunities.push({
           ...item,
           title: safeTitle,
+          category: finalCategory,
+          competitiveness,
           details: finalDetails,
           tags: safeTags,
+        });
+      } else if (!existing.competitiveness) {
+        // Backfill competitiveness if missing
+        await prisma.opportunity.update({
+          where: { id: existing.id },
+          data: { competitiveness },
         });
       }
     } catch (err) {

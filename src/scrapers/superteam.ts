@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from './base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, OpportunityCategory } from '../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, OpportunityCategory, isDeadlineExpired } from '../types/opportunity';
 
 export class SuperteamScraper implements Scraper {
   name = 'superteam_earn';
@@ -41,16 +41,21 @@ export class SuperteamScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
           const slug = item.slug || item.id;
           const rawUrl = item.url || (slug ? `https://earn.superteam.fun/listings/bounties/${slug}` : 'https://earn.superteam.fun');
           const link = sanitizeLink(rawUrl);
           if (!link) continue;
 
-          const tags: string[] = ['Superteam', category.toUpperCase()];
+          const rawTags: string[] = [];
           if (item.skills && Array.isArray(item.skills)) {
-            tags.push(...item.skills.map((s: { label?: string; name?: string } | string) => 
+            rawTags.push(...item.skills.map((s: { label?: string; name?: string } | string) => 
               cleanUntrustedText(typeof s === 'string' ? s : (s.label || s.name || ''), 30)
             ).filter(Boolean));
+          }
+          if (rawTags.length === 0) {
+            rawTags.push(category.toUpperCase());
           }
 
           opportunities.push({
@@ -61,7 +66,7 @@ export class SuperteamScraper implements Scraper {
             reward_num: parseRewardAmount(reward) || (item.rewardAmount ? Number(item.rewardAmount) : null),
             deadline,
             link,
-            tags: tags.slice(0, 5),
+            tags: rawTags.slice(0, 5),
             first_seen: nowIso,
           });
         }

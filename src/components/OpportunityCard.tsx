@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ExternalLink, Clock, ChevronDown } from 'lucide-react';
+import { getCompetitiveness } from '@/types/opportunity';
 
 interface CardProps {
   item: {
@@ -9,6 +10,7 @@ interface CardProps {
     title: string;
     source: string;
     category: string;
+    competitiveness?: string | null;
     reward: string;
     deadline?: string | null;
     link: string;
@@ -21,6 +23,7 @@ interface CardProps {
 
 export function OpportunityCard({ item, index }: CardProps) {
   const [showDetails, setShowDetails] = useState(false);
+  const isLowCompetition = (item.competitiveness === 'low') || getCompetitiveness(item.source) === 'low';
   let isUrgent = false;
   let deadlineLabel = 'FLEXIBLE';
   if (item.deadline) {
@@ -62,8 +65,23 @@ export function OpportunityCard({ item, index }: CardProps) {
         {/* 3. Category badge ("BOUNTY") - small, muted, not heavily colored/boxed, reads as label */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem' }}>
           <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#6e6b62', textTransform: 'uppercase', fontWeight: 500 }}>
-            {item.category}
+            {item.category.replace('_', ' ')}
           </span>
+          {isLowCompetition && (
+            <span style={{
+              fontFamily: 'var(--font-ibm-plex-mono)',
+              fontSize: '0.62rem',
+              letterSpacing: '0.04em',
+              color: '#9aa0a6',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              padding: '1px 6px',
+              borderRadius: '2px',
+              textTransform: 'uppercase',
+            }}>
+              Low competition
+            </span>
+          )}
           {isUrgent && (
             <span style={{ fontFamily: 'var(--font-ibm-plex-mono)', fontSize: '0.62rem', color: '#8a8578', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
               <Clock size={10} />

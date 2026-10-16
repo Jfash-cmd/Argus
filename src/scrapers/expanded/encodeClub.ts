@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class EncodeClubScraper implements Scraper {
   name = 'encode_club';
@@ -26,15 +26,17 @@ export class EncodeClubScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'encode_club',
-            category: 'hackathon',
+            category: 'web3_hackathon',
             reward,
             reward_num: parseRewardAmount(reward),
             deadline,
             link,
-            tags: ['Encode Club', 'Web3', 'Blockchain'],
+            tags: ['Web3', 'Blockchain'],
             first_seen: nowIso,
           });
         }

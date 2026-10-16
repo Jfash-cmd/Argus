@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class LablabScraper implements Scraper {
   name = 'lablab_ai';
@@ -27,15 +27,17 @@ export class LablabScraper implements Scraper {
             if (!isNaN(d.getTime())) deadline = d.toISOString();
           }
 
+          if (isDeadlineExpired(deadline)) continue;
+
           opportunities.push({
             title: cleanUntrustedText(rawTitle, 120),
             source: 'lablab_ai',
-            category: 'hackathon',
+            category: 'web2_hackathon',
             reward,
             reward_num: parseRewardAmount(reward),
             deadline,
             link,
-            tags: ['AI', 'Lablab.ai', ...(ev.technologies || [])].slice(0, 5),
+            tags: ['AI', ...(ev.technologies || [])].slice(0, 5),
             first_seen: nowIso,
           });
         }

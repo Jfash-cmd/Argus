@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from './base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, cleanTitle, filterAndCleanTags } from '../types/opportunity';
 
 export class GitHubScraper implements Scraper {
   name = 'github';
@@ -37,15 +37,19 @@ export class GitHubScraper implements Scraper {
         const repoName = item.repository_url ? item.repository_url.split('/').slice(-2).join('/') : '';
         if (repoName) labels.unshift(cleanUntrustedText(repoName, 40));
 
+        const { title: safeTitle, details: safeDetails } = cleanTitle(item.title || 'GitHub Bounty Issue');
+        const cleanLabels = filterAndCleanTags(labels, 'github');
+
         opportunities.push({
-          title: cleanUntrustedText(item.title || 'GitHub Bounty Issue', 120),
+          title: cleanUntrustedText(safeTitle, 120),
           source: 'github',
           category: 'bounty',
           reward,
           reward_num: parseRewardAmount(reward),
           deadline: null,
           link: rawLink,
-          tags: labels.slice(0, 5),
+          tags: cleanLabels.slice(0, 5),
+          details: safeDetails,
           first_seen: nowIso,
         });
       }

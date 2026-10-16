@@ -1,9 +1,48 @@
-export type OpportunityCategory = 'hackathon' | 'bounty' | 'freelance' | 'grant';
+export type OpportunityCategory = 'web3_hackathon' | 'web2_hackathon' | 'bounty' | 'freelance' | 'grant' | 'hackathon';
+
+export type Competitiveness = 'low' | 'normal' | 'high';
+
+export const HIGH_COMPETITION_SOURCES = new Set([
+  'devpost',
+  'unstop',
+  'mlh',
+  'hackerearth',
+]);
+
+export const LOW_COMPETITION_SOURCES = new Set([
+  'lablab',
+  'lablab_ai',
+  'hackquest',
+  'kaggle',
+  'encodeclub',
+  'encode_club',
+  'taikai',
+]);
+
+export function isDeadlineExpired(deadline: string | Date | null | undefined): boolean {
+  if (!deadline) return false;
+  const d = new Date(deadline);
+  if (isNaN(d.getTime())) return false;
+  return d.getTime() <= Date.now();
+}
+
+export function getCompetitiveness(source?: string): Competitiveness {
+  if (!source) return 'normal';
+  const norm = source.toLowerCase().replace(/[^a-z0-9]/g, '');
+  for (const s of HIGH_COMPETITION_SOURCES) {
+    if (norm.includes(s.replace(/[^a-z0-9]/g, ''))) return 'high';
+  }
+  for (const s of LOW_COMPETITION_SOURCES) {
+    if (norm.includes(s.replace(/[^a-z0-9]/g, ''))) return 'low';
+  }
+  return 'normal';
+}
 
 export interface NormalizedOpportunity {
   title: string;
   source: string;
   category: OpportunityCategory;
+  competitiveness?: Competitiveness;
   reward: string;
   reward_num: number | null;
   deadline: string | null;
@@ -92,17 +131,80 @@ export function cleanTag(rawTag: string): string {
   return stripEmojisAndDecorations(rawTag).replace(/^#+/, '').trim().toUpperCase();
 }
 
-// Clean title: strip bracketed prefixes, emojis, and split out extra task details
+// Check if a tag is redundant with the opportunity source or lacks semantic value
+export function isRedundantTag(rawTag: string, source?: string): boolean {
+  if (!rawTag || typeof rawTag !== 'string') return true;
+  const tagNorm = rawTag.trim().toLowerCase().replace(/[\s\-_.]+/g, '');
+  if (!tagNorm) return true;
+
+  // Generic tags that add no filtering value when applied universally
+  if (tagNorm === 'competition') return true;
+
+  if (source) {
+    const srcNorm = source.trim().toLowerCase().replace(/[\s\-_.]+/g, '');
+    if (tagNorm === srcNorm) return true;
+    if (srcNorm.includes(tagNorm) && tagNorm.length >= 3) return true;
+    if (tagNorm.includes(srcNorm) && srcNorm.length >= 3) return true;
+
+    // Handle common source prefixes / compound names
+    if (srcNorm.startsWith('superteam') && tagNorm === 'superteam') return true;
+    if (srcNorm.startsWith('lablab') && (tagNorm === 'lablab' || tagNorm === 'lablabai')) return true;
+    if (srcNorm.startsWith('encode') && (tagNorm === 'encode' || tagNorm === 'encodeclub')) return true;
+    if (srcNorm.startsWith('unstop') && tagNorm === 'unstop') return true;
+  }
+
+  return false;
+}
+
+// Clean, normalize, filter redundant tags, and deduplicate
+export function filterAndCleanTags(tags: string[] = [], source?: string): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const raw of tags) {
+    if (!raw || typeof raw !== 'string') continue;
+    if (isRedundantTag(raw, source)) continue;
+
+    const cleaned = cleanTag(raw);
+    if (!cleaned) continue;
+    if (isRedundantTag(cleaned, source)) continue;
+
+    const key = cleaned.toUpperCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(cleaned);
+    }
+  }
+
+  return result;
+}
+
+// Clean title: strip Markdown links, repo-path tags, URLs, bracketed prefixes, emojis, and split details
 export function cleanTitle(rawTitle: string): { title: string; details: string | null } {
   if (!rawTitle || typeof rawTitle !== 'string') return { title: 'Untitled Opportunity', details: null };
-  let text = stripEmojisAndDecorations(rawTitle);
+  let text = rawTitle;
 
+  // 1. Convert Markdown links [text](url) -> extract ONLY link text
+  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+
+  // 2. Strip repo-path tags like #owner/repo-name or #TAG
+  text = text.replace(/#[\w\-\.\/]+/g, '');
+
+  // 3. Strip any stray raw URLs
+  text = text.replace(/https?:\/\/\S+/gi, '');
+
+  // 4. Strip leading bracketed prefixes (e.g. [Bounty], [Bug], [Bounty: $105])
   let prevText = '';
   while (text !== prevText) {
     prevText = text;
     text = text.replace(/^\s*\[[^\]]+\]\s*[:\-\—]?\s*/i, '').trim();
   }
+
+  // 5. Clean emojis and symbols
   text = stripEmojisAndDecorations(text);
+
+  // 6. Strip stray leading/trailing quotes or punctuation (preserving balanced parens)
+  text = text.replace(/^[\s\-_*|:•#~]+/, '').replace(/[\s\-_*|:•#~]+$/, '').trim();
   if (!text) return { title: 'Opportunity', details: null };
 
   let title = text;

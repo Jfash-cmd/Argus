@@ -14,7 +14,7 @@ interface FilterFormProps {
 
 export function FilterForm({ filter, onFilterChange, onSave, saving, savedSuccess, user }: FilterFormProps) {
   const [newKeyword, setNewKeyword] = useState('');
-  const allCategories = ['hackathon', 'bounty', 'freelance', 'grant'];
+  const allCategories = ['web3_hackathon', 'web2_hackathon', 'bounty', 'freelance', 'grant'];
   const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'ArgusOpportunityBot';
   const deepLink = user?.auth_token 
     ? `https://t.me/${botUsername}?start=${user.auth_token}`
@@ -61,7 +61,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
                   color: active ? 'var(--accent-coral)' : 'var(--text-muted)',
                 }}
               >
-                {cat}
+                {cat.replace('_', ' ')}
               </button>
             );
           })}

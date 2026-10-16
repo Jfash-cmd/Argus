@@ -76,18 +76,33 @@ function initBotCommands(bot: TelegramBot) {
     bot.sendMessage(chatId, `✅ *Keywords:* ${keywords.length ? keywords.map(k => `\`${k}\``).join(', ') : '_(none)_'}`, { parse_mode: 'Markdown' });
   });
 
-  // /category <hackathon|bounty|freelance|grant>
+  // /category <web3_hackathon|web2_hackathon|bounty|freelance|grant>
   bot.onText(/\/category\s*(.*)/, async (msg, match) => {
     const chatId = msg.chat.id.toString();
-    const rawCat = match?.[1]?.trim().toLowerCase() as OpportunityCategory;
-    const valid: OpportunityCategory[] = ['hackathon', 'bounty', 'freelance', 'grant'];
-    if (!valid.includes(rawCat)) return bot.sendMessage(chatId, `❗ Choose: ${valid.join(', ')}`, { parse_mode: 'Markdown' });
+    const raw = match?.[1]?.trim().toLowerCase() || '';
+    const map: Record<string, OpportunityCategory> = {
+      web3: 'web3_hackathon',
+      web3_hackathon: 'web3_hackathon',
+      web2: 'web2_hackathon',
+      web2_hackathon: 'web2_hackathon',
+      bounty: 'bounty',
+      freelance: 'freelance',
+      grant: 'grant',
+    };
+    const targetCat = map[raw];
+    if (!targetCat) {
+      return bot.sendMessage(
+        chatId,
+        '❗ *Choose:* `web3_hackathon` (or `web3`), `web2_hackathon` (or `web2`), `bounty`, `freelance`, `grant`',
+        { parse_mode: 'Markdown' }
+      );
+    }
     const user = await prisma.user.findFirst({ where: { chat_id: chatId }, include: { filter: true } });
     if (!user) return bot.sendMessage(chatId, '❗ Type /start first.');
     const cats: OpportunityCategory[] = user.filter?.categories ? JSON.parse(user.filter.categories) : [];
-    const idx = cats.indexOf(rawCat);
+    const idx = cats.indexOf(targetCat);
     if (idx > -1) cats.splice(idx, 1);
-    else cats.push(rawCat);
+    else cats.push(targetCat);
     await prisma.filter.upsert({ where: { user_id: user.id }, update: { categories: JSON.stringify(cats) }, create: { user_id: user.id, categories: JSON.stringify(cats) } });
     bot.sendMessage(chatId, `✅ *Categories:* ${cats.length ? cats.join(', ') : '_(all)_'}`, { parse_mode: 'Markdown' });
   });

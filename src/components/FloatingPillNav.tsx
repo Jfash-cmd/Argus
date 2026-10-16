@@ -15,7 +15,8 @@ export function FloatingPillNav({
 }: FloatingPillNavProps) {
   const tabs = [
     { id: 'all', label: 'ALL' },
-    { id: 'hackathon', label: 'HACKATHONS' },
+    { id: 'web3_hackathon', label: 'WEB3 HACKATHONS' },
+    { id: 'web2_hackathon', label: 'WEB2 HACKATHONS' },
     { id: 'bounty', label: 'BOUNTIES' },
     { id: 'freelance', label: 'FREELANCE' },
     { id: 'grant', label: 'GRANTS' },

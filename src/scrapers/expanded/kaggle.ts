@@ -1,5 +1,5 @@
 import { Scraper, safeFetch, cleanUntrustedText } from '../base';
-import { NormalizedOpportunity, parseRewardAmount, sanitizeLink } from '../../types/opportunity';
+import { NormalizedOpportunity, parseRewardAmount, sanitizeLink, isDeadlineExpired } from '../../types/opportunity';
 
 export class KaggleScraper implements Scraper {
   name = 'kaggle';
@@ -25,6 +25,8 @@ export class KaggleScraper implements Scraper {
               if (!isNaN(d.getTime())) deadline = d.toISOString();
             }
 
+            if (isDeadlineExpired(deadline)) continue;
+
             opportunities.push({
               title: cleanUntrustedText(rawTitle, 120),
               source: 'kaggle',
@@ -33,7 +35,7 @@ export class KaggleScraper implements Scraper {
               reward_num: parseRewardAmount(reward),
               deadline,
               link,
-              tags: ['Kaggle', 'Machine Learning', comp.category || 'Data Science'],
+              tags: ['Machine Learning', comp.category || 'Data Science'],
               first_seen: nowIso,
             });
           }

@@ -3,7 +3,8 @@
 export function Phase2Stubs() {
   const sources = [
     { name: 'Devpost, Superteam, GitHub, Reddit', status: 'Phase 1 Core (Active)' },
-    { name: 'Substack & Medium (RSS Feeds)', status: 'Phase 2 Expanded (Active)' },
+    { name: 'Medium (RSS Feeds)', status: 'Phase 2 Expanded (Active)' },
+    { name: 'Substack (RSS Feeds)', status: 'Phase 2 Expanded (Active)' },
     { name: 'lablab.ai & HackQuest', status: 'Phase 2 Expanded (Active)' },
     { name: 'Kaggle, MLH, Devfolio', status: 'Phase 2 Expanded (Active)' },
     { name: 'HackerEarth, ETHGlobal, Unstop', status: 'Phase 2 Expanded (Active)' },

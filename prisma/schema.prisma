@@ -11,17 +11,19 @@ model Opportunity {
   id         String    @id @default(uuid())
   title      String
   source     String
-  category   String
-  reward     String
-  reward_num Float?
-  deadline   DateTime?
-  link       String
-  tags       String    @default("[]")
-  details    String?
-  first_seen DateTime  @default(now())
+  category        String
+  competitiveness String?   @default("normal")
+  reward          String
+  reward_num      Float?
+  deadline        DateTime?
+  link            String
+  tags            String    @default("[]")
+  details         String?
+  first_seen      DateTime  @default(now())
 
   @@unique([title, source])
   @@index([category])
+  @@index([competitiveness])
   @@index([deadline])
   @@index([first_seen])
   @@map("opportunities")
