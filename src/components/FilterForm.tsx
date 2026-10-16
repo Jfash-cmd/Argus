@@ -37,7 +37,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
   };
 
   return (
-    <div style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', padding: '1.5rem' }}>
+    <div style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', padding: 'clamp(1rem, 3vw, 1.5rem)' }}>
       <div className="mono-label" style={{ color: 'var(--accent-coral)', marginBottom: '0.4rem' }}>
         // ALERT FILTER MATRIX
       </div>
@@ -45,7 +45,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
 
       <div style={{ marginBottom: '1.25rem' }}>
         <div className="mono-label" style={{ color: 'var(--text-muted)', marginBottom: '0.4rem' }}>CATEGORIES</div>
-        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {allCategories.map(cat => {
             const active = filter.categories.includes(cat);
             return (
@@ -54,11 +54,15 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
                 onClick={() => toggleCategory(cat)}
                 className="mono-label"
                 style={{
-                  padding: '0.35rem 0.65rem',
+                  padding: '0.45rem 0.75rem',
+                  minHeight: '38px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
                   borderRadius: '2px',
                   border: active ? '1px solid var(--accent-coral)' : '1px solid var(--border-hairline)',
                   background: active ? 'rgba(231, 96, 63, 0.15)' : 'transparent',
                   color: active ? 'var(--accent-coral)' : 'var(--text-muted)',
+                  cursor: 'pointer',
                 }}
               >
                 {cat.replace('_', ' ')}
@@ -78,16 +82,16 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
             onChange={e => setNewKeyword(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && addKeyword()}
             className="mono-label"
-            style={{ flex: 1, padding: '0.45rem 0.65rem', background: '#171915', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.75rem' }}
+            style={{ flex: 1, minHeight: '44px', padding: '0.45rem 0.65rem', background: '#171915', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.75rem' }}
           />
-          <button onClick={addKeyword} className="mono-label" style={{ padding: '0.45rem 0.75rem', background: 'transparent', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.7rem' }}>
+          <button onClick={addKeyword} className="mono-label" style={{ minHeight: '44px', minWidth: '54px', padding: '0.45rem 0.85rem', background: 'transparent', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.7rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
             ADD
           </button>
         </div>
         <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
           {filter.keywords.map(kw => (
-            <span key={kw} className="mono-label" style={{ background: 'rgba(231, 96, 63, 0.1)', color: 'var(--accent-coral)', padding: '0.15rem 0.45rem', border: '1px solid rgba(231, 96, 63, 0.25)', fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              #{kw} <button onClick={() => onFilterChange({ ...filter, keywords: filter.keywords.filter(k => k !== kw) })} style={{ background: 'none', border: 'none', color: 'var(--accent-coral)', cursor: 'pointer' }}>&times;</button>
+            <span key={kw} className="mono-label" style={{ background: 'rgba(231, 96, 63, 0.1)', color: 'var(--accent-coral)', padding: '0.25rem 0.5rem', border: '1px solid rgba(231, 96, 63, 0.25)', fontSize: '0.65rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              #{kw} <button onClick={() => onFilterChange({ ...filter, keywords: filter.keywords.filter(k => k !== kw) })} style={{ background: 'none', border: 'none', color: 'var(--accent-coral)', cursor: 'pointer', padding: '0 2px' }}>&times;</button>
             </span>
           ))}
         </div>
@@ -100,7 +104,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
           value={filter.min_prize}
           onChange={e => onFilterChange({ ...filter, min_prize: Number(e.target.value) })}
           className="mono-label"
-          style={{ width: '100%', padding: '0.45rem 0.65rem', background: '#171915', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.75rem' }}
+          style={{ width: '100%', minHeight: '44px', padding: '0.45rem 0.65rem', background: '#171915', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', fontSize: '0.75rem' }}
         />
       </div>
 
@@ -109,7 +113,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
           onClick={onSave}
           disabled={saving}
           className="mono-label"
-          style={{ flex: 1, padding: '0.65rem', background: savedSuccess ? '#10b981' : 'var(--accent-coral)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+          style={{ flex: '1 1 180px', minHeight: '44px', padding: '0.65rem 1rem', background: savedSuccess ? '#10b981' : 'var(--accent-coral)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', cursor: 'pointer' }}
         >
           {savedSuccess && <Check size={14} />}
           {saving ? 'SYNCING...' : savedSuccess ? 'PREFERENCES SAVED' : 'SAVE PREFERENCES'}
@@ -120,7 +124,7 @@ export function FilterForm({ filter, onFilterChange, onSave, saving, savedSucces
           target="_blank"
           rel="noopener noreferrer"
           className="mono-label"
-          style={{ padding: '0.65rem 0.85rem', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.7rem' }}
+          style={{ flex: '0 1 auto', minHeight: '44px', padding: '0.65rem 0.85rem', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem', fontSize: '0.7rem' }}
         >
           <Send size={12} color="var(--accent-coral)" />
           OPEN BOT <ExternalLink size={11} />

@@ -98,10 +98,10 @@ export default function DashboardPage() {
           <div className="mono-label" style={{ color: 'var(--accent-coral)', marginBottom: '0.35rem' }}>
             // TELEGRAM ID: {user.telegram_id} &bull; CHAT: {user.chat_id || 'PENDING /START'}
           </div>
-          <h1 className="heading-main" style={{ fontSize: '2.2rem', lineHeight: 1.1 }}>
+          <h1 className="dashboard-heading">
             FILTER RULES &amp; ROUTING
           </h1>
-          <div className="heading-accent" style={{ marginTop: '0.2rem' }}>
+          <div className="heading-accent" style={{ marginTop: '0.2rem', fontSize: 'clamp(1.1rem, 3vw, 1.45rem)' }}>
             customized alert stream synced with your personal telegram bot
           </div>
         </div>
@@ -109,14 +109,26 @@ export default function DashboardPage() {
         <button
           onClick={handleTestDigest}
           className="mono-label"
-          style={{ background: 'transparent', border: '1px solid var(--border-hairline)', color: 'var(--text-light)', padding: '0.6rem 1rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.72rem' }}
+          style={{
+            background: 'transparent',
+            border: '1px solid var(--border-hairline)',
+            color: 'var(--text-light)',
+            padding: '0.6rem 1rem',
+            minHeight: '44px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.4rem',
+            fontSize: '0.72rem',
+            cursor: 'pointer',
+          }}
         >
           <Send size={13} color="var(--accent-coral)" />
           {testDigestStatus || 'TRIGGER TEST DIGEST (WAT)'}
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
+      <div className="dashboard-grid-2col" style={{ marginBottom: '3.5rem' }}>
         <FilterForm filter={filter} onFilterChange={setFilter} onSave={handleSaveFilter} saving={saving} savedSuccess={savedSuccess} user={user} />
         <Phase2Stubs />
       </div>
@@ -125,7 +137,7 @@ export default function DashboardPage() {
         <div className="mono-label" style={{ color: 'var(--accent-coral)', marginBottom: '0.25rem' }}>
           // MATCHED INVENTORY &bull; {matchedOpps.length} LISTINGS
         </div>
-        <h2 className="heading-main" style={{ fontSize: '1.5rem' }}>OPPORTUNITIES MATCHING YOUR ACTIVE FILTERS</h2>
+        <h2 className="heading-main" style={{ fontSize: 'clamp(1.2rem, 3.5vw, 1.5rem)' }}>OPPORTUNITIES MATCHING YOUR ACTIVE FILTERS</h2>
       </div>
 
       <div className="grid-4-col">

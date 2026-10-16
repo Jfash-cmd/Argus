@@ -59,8 +59,8 @@ export function OpportunityCard({ item, index }: CardProps) {
           </span>
         </div>
 
-        {/* 2. Large empty vertical gap (roughly 80-120px breathing room) */}
-        <div style={{ height: '96px' }} />
+        {/* 2. Responsive vertical gap (32px on mobile, scaling to 96px on desktop) */}
+        <div className="card-spacer" />
 
         {/* 3. Category badge ("BOUNTY") - small, muted, not heavily colored/boxed, reads as label */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.65rem' }}>
@@ -90,8 +90,8 @@ export function OpportunityCard({ item, index }: CardProps) {
           )}
         </div>
 
-        {/* 4. Title - bold Manrope, text-lg to text-xl, full opacity white/cream */}
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.015em', marginBottom: '1rem', color: 'var(--text-light)', fontFamily: 'var(--font-manrope)' }}>
+        {/* 4. Title - bold Manrope, responsive fluid typography */}
+        <h3 style={{ fontSize: 'clamp(1.05rem, 3.5vw, 1.25rem)', fontWeight: 700, lineHeight: 1.35, letterSpacing: '-0.015em', marginBottom: '1rem', color: 'var(--text-light)', fontFamily: 'var(--font-manrope)' }}>
           <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
             {item.title}
           </a>
@@ -116,7 +116,8 @@ export function OpportunityCard({ item, index }: CardProps) {
               style={{
                 background: 'none',
                 border: 'none',
-                padding: 0,
+                padding: '0.35rem 0',
+                minHeight: '36px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',

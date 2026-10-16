@@ -10,9 +10,9 @@ interface HeroBannerProps {
 
 export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) {
   return (
-    <div style={{ paddingTop: '2.5rem', marginBottom: '3rem' }}>
+    <div style={{ paddingTop: '2rem', marginBottom: '2.5rem' }}>
       {/* Top Meta Line */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div className="mono-label" style={{ color: 'var(--accent-coral)', fontSize: '0.72rem', letterSpacing: '0.12em' }}>
           // REAL-TIME OPPORTUNITY STREAM &bull; {totalCount} INDEXED
         </div>
@@ -24,14 +24,16 @@ export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) 
             background: 'transparent',
             border: '1px solid var(--border-hairline)',
             color: 'var(--text-light)',
-            padding: '0.45rem 1rem',
+            padding: '0.5rem 1rem',
+            minHeight: '44px',
             borderRadius: '4px',
             fontFamily: 'var(--font-ibm-plex-mono)',
             fontSize: '0.7rem',
             letterSpacing: '0.08em',
             textTransform: 'uppercase',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: '0.5rem',
             cursor: 'pointer',
           }}
@@ -41,33 +43,13 @@ export function HeroBanner({ onSync, refreshing, totalCount }: HeroBannerProps) 
         </button>
       </div>
 
-      {/* Main Heading: Exact 48px (text-5xl), font-weight 700, line-height 1.1 */}
-      <h1
-        className="heading-main"
-        style={{
-          fontSize: '48px',
-          lineHeight: 1.1,
-          letterSpacing: '-0.025em',
-          fontWeight: 700,
-          maxWidth: '1000px',
-        }}
-      >
+      {/* Main Heading: Responsive font sizing clamp(1.75rem, 5.5vw, 3rem) */}
+      <h1 className="hero-heading">
         DISCOVER HIGH-YIELD OPPORTUNITIES
       </h1>
 
-      {/* Subtitle Line: Exact 32px (text-3xl), italic, Instrument Serif, line-height 1.1, gap 8px */}
-      <div
-        className="heading-accent"
-        style={{
-          fontSize: '32px',
-          lineHeight: 1.1,
-          marginTop: '8px',
-          maxWidth: '1000px',
-          fontFamily: 'var(--font-instrument-serif), Georgia, serif',
-          fontStyle: 'italic',
-          color: '#99c3d9',
-        }}
-      >
+      {/* Subtitle Line: Responsive italic font sizing clamp(1.1rem, 3.5vw, 2rem) */}
+      <div className="hero-subheading">
         curated intelligence for hackathons, bounties, freelance gigs, and grants
       </div>
     </div>

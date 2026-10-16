@@ -58,7 +58,7 @@ export function TelegramAuthWidget() {
       : `https://t.me/${botUsername}`;
 
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <a
           href={deepLink}
           target="_blank"
@@ -67,24 +67,41 @@ export function TelegramAuthWidget() {
           style={{
             background: 'var(--accent-coral)',
             color: '#fff',
-            padding: '0.35rem 0.75rem',
+            padding: '0.45rem 0.85rem',
+            minHeight: '44px',
             borderRadius: '4px',
             fontSize: '0.72rem',
             fontFamily: 'var(--font-ibm-plex-mono)',
             fontWeight: 600,
             letterSpacing: '0.05em',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
             gap: '0.35rem',
             textTransform: 'uppercase',
+            whiteSpace: 'nowrap',
           }}
         >
           <Send size={12} />
           {user.first_name || user.username || 'Linked'}
           <ExternalLink size={11} />
         </a>
-        <button onClick={handleLogout} title="Disconnect" style={{ background: 'transparent', border: 'none', color: 'var(--text-ink)', cursor: 'pointer', opacity: 0.6 }}>
-          <LogOut size={15} />
+        <button
+          onClick={handleLogout}
+          title="Disconnect"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text-ink)',
+            cursor: 'pointer',
+            opacity: 0.6,
+            minHeight: '44px',
+            minWidth: '44px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <LogOut size={16} />
         </button>
       </div>
     );
@@ -99,17 +116,19 @@ export function TelegramAuthWidget() {
           background: 'var(--text-ink)',
           color: '#fff',
           border: 'none',
-          padding: '0.45rem 0.95rem',
+          padding: '0.5rem 0.95rem',
+          minHeight: '44px',
           borderRadius: '4px',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
           fontFamily: 'var(--font-ibm-plex-mono)',
           fontWeight: 600,
-          letterSpacing: '0.08em',
+          letterSpacing: '0.06em',
           textTransform: 'uppercase',
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           gap: '0.45rem',
           cursor: 'pointer',
+          whiteSpace: 'nowrap',
         }}
       >
         <Send size={13} />

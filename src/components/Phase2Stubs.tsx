@@ -13,7 +13,7 @@ export function Phase2Stubs() {
   ];
 
   return (
-    <div style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', padding: '1.5rem' }}>
+    <div style={{ border: '1px solid var(--border-hairline)', background: 'var(--bg-card)', padding: 'clamp(1rem, 3vw, 1.5rem)' }}>
       <div className="mono-label" style={{ color: 'var(--accent-coral)', marginBottom: '0.4rem' }}>
         // RADAR COVERAGE MATRIX
       </div>
@@ -24,9 +24,9 @@ export function Phase2Stubs() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {sources.map((s, idx) => (
-          <div key={idx} style={{ padding: '0.6rem 0.75rem', background: '#171915', border: '1px solid var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div key={idx} style={{ padding: '0.6rem 0.75rem', background: '#171915', border: '1px solid var(--border-hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{s.name}</span>
-            <span className="mono-label" style={{ fontSize: '0.62rem', color: s.status.includes('Active') ? 'var(--accent-coral)' : 'var(--text-muted)' }}>
+            <span className="mono-label" style={{ fontSize: '0.62rem', color: s.status.includes('Active') ? 'var(--accent-coral)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>
               {s.status}
             </span>
           </div>

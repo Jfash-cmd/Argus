@@ -30,7 +30,13 @@ input, select { font-family: inherit; }
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 1.5rem;
+  }
 }
 
 /* Micro-labels in IBM Plex Mono */
@@ -42,7 +48,7 @@ input, select { font-family: inherit; }
   letter-spacing: 0.12em;
 }
 
-/* Section Header Typography Pair */
+/* Responsive Section Header Typography */
 .heading-main {
   font-family: var(--font-manrope), sans-serif;
   font-weight: 800;
@@ -53,54 +59,178 @@ input, select { font-family: inherit; }
 .heading-accent {
   font-family: var(--font-instrument-serif), Georgia, serif;
   font-style: italic;
-  font-size: 1.6rem;
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
   color: var(--accent-italic);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
-/* Numbered 4-Column Bordered Grid */
+.hero-heading {
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-light);
+  line-height: 1.1;
+  font-size: clamp(1.75rem, 5.5vw, 3rem);
+  max-width: 1000px;
+  word-break: break-word;
+}
+
+.hero-subheading {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-style: italic;
+  color: var(--accent-italic);
+  line-height: 1.25;
+  font-size: clamp(1.1rem, 3.5vw, 2rem);
+  margin-top: 0.5rem;
+  max-width: 1000px;
+}
+
+.dashboard-heading {
+  font-family: var(--font-manrope), sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-light);
+  line-height: 1.15;
+  font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+  word-break: break-word;
+}
+
+/* Header Navbar Responsive Classes */
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.header-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .header-brand-group {
+    gap: 2.25rem;
+  }
+}
+
+.header-nav {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.header-nav-link {
+  padding: 0.5rem 0.85rem;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: var(--text-ink);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.radar-status-badge {
+  display: none;
+}
+@media (min-width: 768px) {
+  .radar-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
+}
+
+/* Responsive 4-Column Bordered Grid (1 col mobile, 2 col tablet, 4 col desktop) */
 .grid-4-col {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr;
   border-top: 1px solid var(--border-hairline);
   border-left: 1px solid var(--border-hairline);
 }
 
-@media (max-width: 1024px) {
-  .grid-4-col { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 640px) {
+  .grid-4-col {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
-@media (max-width: 640px) {
-  .grid-4-col { grid-template-columns: 1fr; }
+
+@media (min-width: 1024px) {
+  .grid-4-col {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .grid-card {
   border-right: 1px solid var(--border-hairline);
   border-bottom: 1px solid var(--border-hairline);
-  padding: 2rem 1.75rem;
+  padding: 1.25rem 1rem;
   background-color: var(--bg-card);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 420px;
+  min-height: 320px;
   position: relative;
   transition: background-color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .grid-card {
+    padding: 1.75rem 1.5rem;
+    min-height: 380px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-card {
+    padding: 2rem 1.75rem;
+    min-height: 420px;
+  }
 }
 
 .grid-card:hover {
   background-color: var(--bg-card-hover);
 }
 
-/* Card Apply Action Button */
+.card-spacer {
+  height: 32px;
+}
+@media (min-width: 640px) {
+  .card-spacer {
+    height: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  .card-spacer {
+    height: 96px;
+  }
+}
+
+/* Card Apply Action Button (Minimum 44px Touch Target) */
 .btn-apply {
   font-family: var(--font-ibm-plex-mono), monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  padding: 0.45rem 0.9rem;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  min-width: 84px;
   border-radius: 4px;
   border: 1px solid var(--border-hairline);
   background: rgba(242, 238, 226, 0.03);
@@ -115,38 +245,142 @@ input, select { font-family: inherit; }
   background: rgba(231, 96, 63, 0.08);
 }
 
-/* Floating Pill-Shaped Tab Switcher (Bottom-Center) */
+/* Responsive Search Bar & Filter Row */
+.search-bar-row {
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
+  padding: 0.75rem 0;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .search-bar-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 0;
+  }
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+}
+
+.search-input-field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.75rem 0.6rem 2.4rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-light);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.search-input-field:focus {
+  border-color: var(--accent-coral);
+}
+
+.min-prize-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  padding: 0 0.85rem;
+  border: 1px solid var(--border-hairline);
+  min-height: 44px;
+  border-radius: 2px;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .min-prize-wrapper {
+    width: auto;
+  }
+}
+
+.min-prize-input {
+  width: 80px;
+  min-height: 40px;
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+/* Floating Pill-Shaped Tab Switcher (Horizontally scrollable on mobile) */
 .floating-pill-nav {
   position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 1rem;
+  left: 0.75rem;
+  right: 0.75rem;
   z-index: 100;
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(28, 30, 25, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 0.4rem 0.5rem;
+  background: rgba(24, 26, 21, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0.35rem 0.45rem;
   border-radius: 999px;
   border: 1px solid var(--border-hairline);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.floating-pill-nav::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .floating-pill-nav {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 2rem;
+    max-width: calc(100vw - 3rem);
+    width: max-content;
+    padding: 0.4rem 0.5rem;
+  }
 }
 
 .pill-button {
   font-family: var(--font-ibm-plex-mono), monospace;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 0.85rem;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
   border: none;
   background: transparent;
   color: var(--text-muted);
   transition: all 0.15s ease;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .pill-button {
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    letter-spacing: 0.1em;
+  }
 }
 
 .pill-button:hover {
@@ -156,6 +390,28 @@ input, select { font-family: inherit; }
 .pill-button.active {
   background: var(--accent-coral);
   color: #fff;
+}
+
+/* Dashboard 2-column Grid */
+.dashboard-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+@media (min-width: 860px) {
+  .dashboard-grid-2col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Generic touch-friendly button utility */
+.btn-touch {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Custom Scrollbar */
